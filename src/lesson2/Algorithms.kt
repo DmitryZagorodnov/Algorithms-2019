@@ -2,6 +2,8 @@
 
 package lesson2
 
+import java.lang.Math.sqrt
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -95,8 +97,27 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * вернуть ту из них, которая встречается раньше в строке first.
  */
 fun longestCommonSubstring(first: String, second: String): String {
-    TODO()
-}
+    val massiv = Array(second.length) {0}       //Создаем массив, соответствующий второму слову
+    var count = 0
+    var index = 0
+
+    for (j in first) {                              //Бежим по буквам первого слова, сравнивая их со всеми буквами
+        for (i in second.length - 1 downTo 1) {     //второго слова(с конца). Если буквы совпадают, присваиваем соотв.
+            if (second[i] == j) {                   //элементу массива значение предыдущего элемента, увеличенного
+                massiv[i] = 1 + massiv[i - 1]    //на единицу, иначе присваиваем ему ноль
+            } else {
+                massiv[i] = 0
+            }
+            if (count < massiv[i]) {                //параллельно с этим мы считаем длину максимальной подстроки в count
+                count = massiv[i]                   //и запоминаем индекс буквы, на которой заканчивается эта подстрока
+                index = i
+            }
+        }
+        massiv[0] = if (second[0] == j) 1 else 0    //крайний случай, избегаем index outOfBounds Exception
+    }
+    return if (count == 0) ""
+    else second.substring(index - count + 1..index)
+}                                                   //быстродействие o(n^2), ресурсоемкость o(second.length)
 
 /**
  * Число простых чисел в интервале
@@ -109,7 +130,21 @@ fun longestCommonSubstring(first: String, second: String): String {
  * Единица простым числом не считается.
  */
 fun calcPrimesNumber(limit: Int): Int {
-    TODO()
+    var x = 0                   //Выполняется за O(n), ресурсоемкость O(1)
+    for (i in 2..limit) {
+        if (isPrime(i)) x++
+    }
+    return x
+}
+
+fun isPrime(n: Int): Boolean {
+    if (n < 2) return false                 //Выполняется за O(n^1/2)
+    if (n == 2) return true
+    if (n % 2 == 0) return false
+    for (m in 3..sqrt(n.toDouble()).toInt() step 2) {       // Соответственно, вся программа выполняется за O((n^3/2)/2)
+        if (n % m == 0) return false
+    }
+    return true
 }
 
 /**

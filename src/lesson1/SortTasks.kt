@@ -2,6 +2,8 @@
 
 package lesson1
 
+import java.io.File
+
 /**
  * Сортировка времён
  *
@@ -96,8 +98,23 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 99.5
  * 121.3
  */
-fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
+fun sortTemperatures(inputName: String, outputName: String) {  //быстродействие О(n), ресурсоемкость О(1) (т.к.
+    val reader = File(inputName).readLines()                    //массив у нас фиксированного размера)
+    val list = Array(7731) { 0 }
+
+    for (line in reader) {
+        list[((line.toDouble() * 10.0 + 2730.0).toInt())]++     //Приводим все к положительным целым значениям,
+    }                                                           //чтобы было удобнее с ними работать
+
+    File(outputName).bufferedWriter().use {
+        for (i in list.indices) {
+            while (list[i] != 0) {                          //т.к. почти все элементы листа равны 0, while почти не
+                it.write(((i - 2730) / 10.0).toString())    //влияет на быстродействие
+                it.newLine()
+                list[i]--
+            }
+        }
+    }
 }
 
 /**
@@ -148,6 +165,23 @@ fun sortSequence(inputName: String, outputName: String) {
  * Результат: second = [1 3 4 9 9 13 15 20 23 28]
  */
 fun <T : Comparable<T>> mergeArrays(first: Array<T>, second: Array<T?>) {
-    TODO()
+    var i = 0
+    var j = first.size
+    var c = 0
+    do {
+        if (second[j]!! < first[i]) {          //Оценка быстродействия О(n) (т.к. у нас 1 цикл работает за O(n - k),
+            second[c] = second[j]              //а второй "добивает" до О(n)), ресурсоемкости О(1)
+            j++
+        } else {
+            second[c] = first[i]
+            i++
+        }
+        c++
+    } while (i != first.size && j != second.size)
+    while (i < first.size && c < second.size) {
+        second[c] = first[i]
+        i++
+        c++
+    }
 }
 
