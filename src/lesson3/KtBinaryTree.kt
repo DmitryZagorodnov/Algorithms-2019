@@ -1,5 +1,6 @@
 package lesson3
 
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.NoSuchElementException
 import kotlin.math.max
@@ -66,6 +67,7 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
         TODO()
     }
 
+
     override operator fun contains(element: T): Boolean {
         val closest = find(element)
         return closest != null && element.compareTo(closest.value) == 0
@@ -84,22 +86,38 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
     }
 
     inner class BinaryTreeIterator internal constructor() : MutableIterator<T> {
+        private var stack: Stack<Node<T>> = Stack()
+
+        init {
+            var node = root
+            while (node != null) {
+                stack.push(node)
+                node = node.left
+            }
+        }
+
         /**
          * Проверка наличия следующего элемента
          * Средняя
          */
-        override fun hasNext(): Boolean {
-            // TODO
-            throw NotImplementedError()
-        }
+        override fun hasNext(): Boolean = !stack.isEmpty()              //Трудо- и ресурсоемкость О(1)
 
         /**
          * Поиск следующего элемента
          * Средняя
          */
         override fun next(): T {
-            // TODO
-            throw NotImplementedError()
+            if (!hasNext()) throw NotImplementedError()         //Ресурсоемкость O(n), трудоемкость от О(1) до О(n)
+            var node = stack.pop()                              // (в зависимости от случая)
+            val result = node
+            if (node.right != null) {
+                node = node.right
+                while (node != null) {
+                    stack.push(node)
+                    node = node.left
+                }
+            }
+            return result.value
         }
 
         /**
