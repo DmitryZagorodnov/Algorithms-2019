@@ -2,6 +2,8 @@
 
 package lesson6
 
+import java.io.File
+
 /**
  * Наибольшая общая подпоследовательность.
  * Средняя
@@ -54,9 +56,35 @@ fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
  *
  * Здесь ответ 2 + 3 + 4 + 1 + 2 = 12
  */
+//Быстродействие и ресурсоемкость O(n)
 fun shortestPathOnField(inputName: String): Int {
-    TODO()
+    var file = File(inputName).readLines()
+    var str = file.joinToString(separator = " ")
+    var field = str.split(" ")
+    var width = (field.lastIndex + 1) / file.size
+    var ind = 0
+    var ans = MutableList(field.size) { 0 }
+    for (element in field) {
+        ans[ind] = element.toInt()
+        ind++
+    }
+    ind = 1
+    while (ind != ans.lastIndex) {
+        ans[ind] += when {
+            width == 1 -> ans[ind - 1]
+            ind % width == 0 -> ans[ind - width]
+            ind > width -> minOf(ans[ind - 1], ans[ind - width], ans[ind - width - 1])
+            else -> ans[ind - 1]
+        }
+        ind++
+    }
+    return when {
+        width == 1 -> ans[ind - 1] + ans[ind]
+        ind > width -> ans[ind] + minOf(ans[ind - 1], ans[ind - width], ans[ind - width - 1])
+        else -> ans[ind] + ans[ind - 1]
+    }
 }
+
 
 // Задачу "Максимальное независимое множество вершин в графе без циклов"
 // смотрите в уроке 5

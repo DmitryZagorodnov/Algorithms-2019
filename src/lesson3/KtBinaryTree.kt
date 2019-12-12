@@ -64,7 +64,33 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
      * Средняя
      */
     override fun remove(element: T): Boolean {
-        TODO()
+        var current = find(element)
+        if (current?.value == null || element.compareTo(current.value) != 0) return false
+        if (current?.right == null) {
+            current = current?.left
+            size--
+            return true
+        }
+        if (current?.left != null && current?.right?.left == null) {
+            var memory = current.left
+            current = current?.right
+            current?.left = memory
+            size--
+            return true
+        }
+        if (current?.right != null && current?.right?.left != null) {
+            var mostLeft = current.right
+            while (mostLeft?.left != null) {
+                mostLeft = mostLeft.left
+            }
+            mostLeft?.left = current.left
+            mostLeft?.right = current.right
+            current = mostLeft
+            size--
+            mostLeft = null
+            return true
+        }
+        return false
     }
 
 
