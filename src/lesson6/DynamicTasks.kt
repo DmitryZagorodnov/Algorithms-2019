@@ -33,7 +33,28 @@ fun longestCommonSubSequence(first: String, second: String): String {
  * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
  */
 fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
-    TODO()
+    if (list.isEmpty()) return emptyList()
+    if (list.size == 1) return list
+    val lengthArray = Array(list.size) {1}
+    for (j in 1 until list.size) {
+        for (k in 0 until j) {
+            if (list[j] > list[k]) {
+                if (lengthArray[j] <= lengthArray[k]) lengthArray[j] = lengthArray[k] + 1
+            }
+        }
+    }
+    var max = 0
+    for (length in lengthArray) {
+        max = maxOf(max, length)
+    }
+    val ind = lengthArray.indexOf(max)
+    val newlist = MutableList<Int>(max) {999}
+    newlist[max - 1] = list[ind]
+    for (i in ind - 1 downTo 0) {
+        if (list[i] < newlist[lengthArray[i]]) newlist.add(list[i])
+    }
+    newlist.remove(999)
+    return newlist.reversed()
 }
 
 /**
@@ -58,12 +79,12 @@ fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
  */
 //Быстродействие и ресурсоемкость O(n)
 fun shortestPathOnField(inputName: String): Int {
-    var file = File(inputName).readLines()
-    var str = file.joinToString(separator = " ")
-    var field = str.split(" ")
-    var width = (field.lastIndex + 1) / file.size
+    val file = File(inputName).readLines()
+    val str = file.joinToString(separator = " ")
+    val field = str.split(" ")
+    val width = (field.lastIndex + 1) / file.size
     var ind = 0
-    var ans = MutableList(field.size) { 0 }
+    val ans = MutableList(field.size) { 0 }
     for (element in field) {
         ans[ind] = element.toInt()
         ind++
