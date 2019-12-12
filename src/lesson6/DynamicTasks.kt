@@ -48,12 +48,12 @@ fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
         max = maxOf(max, length)
     }
     val ind = lengthArray.indexOf(max)
-    val newlist = MutableList<Int>(max) {999}
+    val newlist = MutableList<Int>(max) {-1}
     newlist[max - 1] = list[ind]
     for (i in ind - 1 downTo 0) {
         if (list[i] < newlist[lengthArray[i]]) newlist.add(list[i])
     }
-    newlist.remove(999)
+    newlist.remove(-1)
     return newlist.reversed()
 }
 
